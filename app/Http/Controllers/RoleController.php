@@ -9,15 +9,15 @@ class RoleController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index', 'store']]);
-        $this->middleware('permission:role-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:role-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['create']]);
+        $this->middleware('permission:role-create', ['only' => ['create']]);
+        $this->middleware('permission:role-edit', ['only' => ['edit']]);
         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
     }
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:roles,name',
@@ -54,7 +54,7 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $data = $request->validate([
             "name" => "required|string"
@@ -74,13 +74,11 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function delete($id)
     {
         try {
             $role = Role::findById($id);
-
             $role->delete();
-
             return response()->json(["role deleted successfully"]);
         } catch (\Exception $e) {
             return response()->json(["error" => $e->getMessage()]);

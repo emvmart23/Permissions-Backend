@@ -17,7 +17,8 @@ class JWTAuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' =>  'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed'
+            'password' => 'required|string|min:6|confirmed',
+            'roles' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -30,6 +31,8 @@ class JWTAuthController extends Controller
                 'email' => $request->get('email'),
                 'password' => Hash::make($request->get('password')),
             ]);
+
+            $user->assignRole($request->get('roles'));
 
             $token = JWTAuth::fromUser($user);
 
